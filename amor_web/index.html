@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Te Amo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Press Start 2P', cursive;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        #teAmoContainer {
+            font-size: clamp(1rem, 4vw, 2.5rem);
+            color: #FF0000;
+            text-shadow: 
+                0 0 5px #FF0000,
+                0 0 10px #FF0000,
+                0 0 15px #FF0000,
+                0 0 20px #FF0000,
+                0 0 25px #FF0000;
+            border: 4px solid #FF0000;
+            padding: 15px 30px;
+            border-radius: 10px;
+            background-color: rgba(20, 0, 0, 0.3);
+            box-shadow: 
+                0 0 10px #FF0000,
+                0 0 20px #FF0000,
+                inset 0 0 15px rgba(255, 0, 0, 0.5);
+            z-index: 100;
+            text-align: center;
+            animation: neonPulse 2s infinite;
+            letter-spacing: 4px;
+        }
+
+        @keyframes neonPulse {
+            0% { 
+                text-shadow: 0 0 5px #FF0000, 0 0 10px #FF0000, 0 0 15px #FF0000;
+                box-shadow: 0 0 10px #FF0000, 0 0 20px #FF0000, inset 0 0 15px rgba(255, 0, 0, 0.5);
+            }
+            50% { 
+                text-shadow: 0 0 10px #FF0000, 0 0 20px #FF0000, 0 0 30px #FF0000;
+                box-shadow: 0 0 20px #FF0000, 0 0 30px #FF0000, inset 0 0 25px rgba(255, 0, 0, 0.7);
+            }
+            100% { 
+                text-shadow: 0 0 5px #FF0000, 0 0 10px #FF0000, 0 0 15px #FF0000;
+                box-shadow: 0 0 10px #FF0000, 0 0 20px #FF0000, inset 0 0 15px rgba(255, 0, 0, 0.5);
+            }
+        }
+
+        .floating-item {
+            position: fixed;
+            user-select: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            will-change: transform, opacity;
+        }
+
+        .floating-text {
+            text-shadow: 0 0 5px currentColor, 
+                        0 0 10px currentColor,
+                        0 0 15px currentColor;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .particle {
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            opacity: 0;
+            background-color: #FFFFFF !important;
+            box-shadow: 0 0 8px #FFFFFF,
+                       0 0 12px #FFFFFF;
+            animation: starTwinkle var(--twinkle-duration) ease-in-out infinite;
+        }
+
+        @keyframes starTwinkle {
+            0% { opacity: var(--min-opacity); }
+            50% { opacity: var(--max-opacity); }
+            100% { opacity: var(--min-opacity); }
+        }
+
+        .corner-name {
+            position: fixed;
+            padding: 15px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5em;
+            z-index: 100;
+        }
+
+        #para-ella {
+            top: 20px;
+            left: 20px;
+            color: #FF69B4;
+            text-shadow: 
+                0 0 5px #FF69B4,
+                0 0 10px #FF69B4,
+                0 0 15px #FF69B4;
+        }
+
+        #de-el {
+            bottom: 20px;
+            right: 20px;
+            color: #FF3333;
+            text-shadow: 
+                0 0 5px #FF3333,
+                0 0 10px #FF3333,
+                0 0 15px #FF3333;
+        }
+
+        #message-button {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        #message-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        #message-button .material-icons {
+            font-size: 30px;
+            color: #FF69B4;
+            text-shadow: 0 0 5px #FF69B4;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 30px;
+            width: 80%;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #FF69B4;
+            border-radius: 15px;
+            color: white;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5em;
+            line-height: 1.6;
+            box-shadow: 
+                0 0 15px rgba(255, 105, 180, 0.3),
+                0 0 30px rgba(255, 105, 180, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: #FF69B4;
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+
+        .close-button:hover {
+            color: #FF3333;
+        }
+
+        @media (max-width: 600px) {
+            .corner-name {
+                font-size: 1.2em;
+                padding: 10px;
+            }
+
+            #para-ella {
+                top: 10px;
+                left: 10px;
+            }
+
+            #de-el {
+                bottom: 10px;
+                right: 10px;
+            }
+
+            .modal-content {
+                width: 90%;
+                padding: 20px;
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="para-ella" class="corner-name">Para: Magdalena Sophia</div>
+    <div id="de-el" class="corner-name">Hecho por: Federico Nicolas</div>
+
+    <div id="teAmoContainer">TE QUIERO MUCHO</div>
+
+    <audio id="backgroundMusic" src="music.mp3" loop></audio>
+
+    <button id="message-button">
+        <span class="material-icons">mail</span>
+    </button>
+
+    <div id="message-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-button">×</button>
+            <p>
+                Hola bonita ,<br><br>
+                Espero te guste esta sorpresita jejeje<br><br>
+                
+                Te quiero muchooooo<br>
+                
+            
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const words = [
+            "GUAPA", "PERFECTA", "LINDA", "PRECIOSA", "BELLA", "HERMOSA",
+            "❤️", "💕", "💞",
+            "✨", "💫", 
+            "AMOR", "<3", "MI VIDA", "-3-", "-w-"
+        ];
+        
+        const neonColors = [
+            "#FF69B4", "#00FFFF", "#FFFF00", "#FF1493", "#FF4500", 
+            "#DA70D6", "#7FFF00", "#FFC0CB", "#00FF00", "#00BFFF",
+            "#FF00FF", "#FFD700", "#FF6347", "#4169E1", "#32CD32"
+        ];
+
+        const numFloatingWords = 27;  // Reducido en 20% adicional (antes era 48)
+        const numParticles = 150;     // Mantenemos la misma cantidad de partículas
+        const floatingElements = [];
+
+        const music = document.getElementById('backgroundMusic');
+        
+        document.body.addEventListener('click', () => {
+            if (music.paused) {
+                music.play().catch(e => console.error("Error al reproducir música:", e));
+            }
+        }, { once: true });
+
+        function getRandom(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function createFloatingItem(isWord) {
+            const item = document.createElement('div');
+            item.classList.add('floating-item');
+            
+            if (isWord) {
+                item.classList.add('floating-text');
+                item.innerText = words[Math.floor(Math.random() * words.length)];
+                item.style.color = neonColors[Math.floor(Math.random() * neonColors.length)];
+                item.style.fontSize = `${getRandom(1, 2.5)}em`;
+            } else {
+                item.classList.add('particle');
+                // Configuración para el efecto de estrella intermitente
+                item.style.setProperty('--twinkle-duration', `${getRandom(2, 6)}s`);
+                item.style.setProperty('--min-opacity', `${getRandom(0.1, 0.3)}`);
+                item.style.setProperty('--max-opacity', `${getRandom(0.7, 1)}`);
+            }
+
+            // Posicionamiento inicial más distribuido
+            item.style.left = `${getRandom(-5, 105)}%`;
+            item.style.top = `${getRandom(-5, 105)}%`;
+
+            // Velocidades y movimientos más naturales
+            const isSlowFall = Math.random() < 0.4;
+            
+            if (isWord) {
+                item.dataset.vx = getRandom(-0.08, 0.08);
+                item.dataset.vy = isSlowFall ? 
+                    getRandom(0.05, 0.15) :
+                    getRandom(0.2, 0.6);
+                item.dataset.amplitude = getRandom(10, isSlowFall ? 50 : 30);
+                item.dataset.frequency = getRandom(0.00065, isSlowFall ? 0.0052 : 0.00975);
+            } else {
+                // Movimiento más lento para las estrellas
+                item.dataset.vx = getRandom(-0.02, 0.02);
+                item.dataset.vy = getRandom(0.02, 0.08);
+                item.dataset.amplitude = getRandom(5, 15);
+                item.dataset.frequency = getRandom(0.00065, 0.00325);
+            }
+            
+            item.dataset.phase = getRandom(0, Math.PI * 2);
+            item.dataset.angle = 0;
+            item.dataset.delay = getRandom(0, 3000);
+
+            document.body.appendChild(item);
+            floatingElements.push(item);
+            
+            if (isWord) {
+                setTimeout(() => {
+                    item.style.opacity = getRandom(0.7, 1);
+                }, item.dataset.delay);
+            }
+        }
+
+        // Crear elementos
+        for (let i = 0; i < numFloatingWords; i++) {
+            createFloatingItem(true);
+        }
+        for (let i = 0; i < numParticles; i++) {
+            createFloatingItem(false);
+        }
+
+        let lastTime = 0;
+        function animate(currentTime) {
+            const deltaTime = currentTime - lastTime;
+            lastTime = currentTime;
+
+            floatingElements.forEach(item => {
+                let x = parseFloat(item.style.left);
+                let y = parseFloat(item.style.top);
+                let vx = parseFloat(item.dataset.vx);
+                let vy = parseFloat(item.dataset.vy);
+                let amplitude = parseFloat(item.dataset.amplitude);
+                let frequency = parseFloat(item.dataset.frequency);
+                let phase = parseFloat(item.dataset.phase);
+
+                // Movimiento mejorado con zigzag más suave
+                x = (x + vx + Math.sin(currentTime * frequency + phase) * amplitude * 0.005);
+                y = (y + vy);
+
+                // Mantener los elementos dentro de los límites con envolvimiento suave
+                if (x > 105) x = -5;
+                if (x < -5) x = 105;
+                if (y > 105) y = -5;
+                if (y < -5) y = 105;
+
+                item.style.left = `${x}%`;
+                item.style.top = `${y}%`;
+                // Ya no aplicamos rotación
+                item.style.transform = 'none';
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
+
+        setTimeout(() => {
+            if (music.paused) {
+                music.play().catch(e => {
+                    console.warn("La reproducción automática de música falló. Se requiere interacción del usuario.");
+                });
+            }
+        }, 500);
+
+        const messageButton = document.getElementById('message-button');
+        const modal = document.getElementById('message-modal');
+        const closeButton = modal.querySelector('.close-button');
+
+        messageButton.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        closeButton.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html> 
